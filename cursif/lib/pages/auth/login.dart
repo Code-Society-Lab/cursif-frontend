@@ -1,3 +1,4 @@
+import 'package:cursif/api/auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -81,12 +82,12 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  String? username;
+  String? email;
   String? password;
 
-  handleChangeUsername(value) {
+  handleChangeEmail(value) {
     setState(() {
-      username = value;
+      email = value;
     });
   }
 
@@ -94,6 +95,10 @@ class _LoginFormState extends State<LoginForm> {
     setState(() {
       password = value;
     });
+  }
+
+  handleLogin() {
+    loginUser(email!, password!);
   }
 
   @override
@@ -105,14 +110,14 @@ class _LoginFormState extends State<LoginForm> {
         const SizedBox(height: 80),
         const Text("Please sign in."),
         const SizedBox(height: 40),
-        LoginField(onChanged: handleChangeUsername, label: "Username"),
+        LoginField(onChanged: handleChangeEmail, label: "Email"),
         LoginField(onChanged: handleChangePassword, label: "Password"),
         const SizedBox(height: 30),
         ElevatedButton(
             style: ButtonStyle(
                 backgroundColor:
                     MaterialStatePropertyAll(Theme.of(context).primaryColor)),
-            onPressed: () => {},
+            onPressed: handleLogin,
             child: const Text("Sign in"))
       ],
     );

@@ -1,4 +1,4 @@
-import 'package:cursif/auth/login.dart';
+import 'package:cursif/pages/auth/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
