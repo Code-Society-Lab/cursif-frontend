@@ -1,5 +1,6 @@
 import 'package:cursif/api/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -23,7 +24,7 @@ class LoginScreen extends StatelessWidget {
           Expanded(
               flex: 3,
               child: Padding(
-                  padding: EdgeInsets.fromLTRB(100, 120, 40, 40),
+                  padding: EdgeInsets.fromLTRB(100, 40, 40, 40),
                   child: LoginForm())),
           Expanded(
               flex: 2,
@@ -74,6 +75,29 @@ class LoginField extends StatelessWidget {
   }
 }
 
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key, this.email, this.password});
+
+  final String? email;
+  final String? password;
+
+  @override
+  Widget build(BuildContext context) {
+    return Mutation(
+        options: MutationOptions(document: gql(loginQuery)),
+        builder: (runMutation, result) => ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(Theme.of(context).primaryColor)),
+            onPressed: (email != null && password != null)
+                ? () {
+                    runMutation({'email': email, 'password': password});
+                  }
+                : null,
+            child: const Text("Sign in")));
+  }
+}
+
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
@@ -97,29 +121,23 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
-  handleLogin() {
-    loginUser(email!, password!);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Title(),
-        const SizedBox(height: 80),
-        const Text("Please sign in."),
-        const SizedBox(height: 40),
-        LoginField(onChanged: handleChangeEmail, label: "Email"),
-        LoginField(onChanged: handleChangePassword, label: "Password"),
-        const SizedBox(height: 30),
-        ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Theme.of(context).primaryColor)),
-            onPressed: handleLogin,
-            child: const Text("Sign in"))
-      ],
-    );
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Title(),
+          const SizedBox(height: 80),
+          const Text("Please sign in."),
+          const SizedBox(height: 40),
+          LoginField(onChanged: handleChangeEmail, label: "Email"),
+          LoginField(onChanged: handleChangePassword, label: "Password"),
+          const SizedBox(height: 30),
+          LoginButton(
+            email: email,
+            password: password,
+          )
+        ]);
   }
 }
