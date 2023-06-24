@@ -87,22 +87,24 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Function getOnPressed;
-
-    if (email != null && password != null) {
-      getOnPressed = (runMutation) => onValidPressed(runMutation);
-    } else {
-      getOnPressed = (runMutation) => null;
-    }
-
     return Mutation(
         options: MutationOptions(document: gql(loginQuery)),
-        builder: (runMutation, result) => ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Theme.of(context).primaryColor)),
-            onPressed: getOnPressed(runMutation),
-            child: const Text("Sign in")));
+        builder: (runMutation, result) {
+          VoidCallback? onPressed;
+
+          if (email != null && password != null) {
+            onPressed = () {
+              runMutation({"email": email, "password": password});
+            };
+          }
+
+          return ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Theme.of(context).primaryColor)),
+              onPressed: onPressed,
+              child: const Text("Sign in"));
+        });
   }
 }
 
